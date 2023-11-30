@@ -9,27 +9,26 @@
 #include <cmath>
 #include <bits/stdc++.h>
 # define PI           3.14159265358979323846
-
 using namespace std;
-/*
-	for( i=0;i<X;i++){
-		for( j=0;j<Y;j++){
-		for( k=0;k<Z;k++){
-			}
-		}
-	}
-*/
-//definim constants
+
+
+// IMPORTANT INFORMATION!! EVERY SINGLE CODE BLOCK IN MAIN IS DIFFERENT FROM EACH OTHER! 
+// THE REASON IS SO EXTENSE IS BECAUSE WE NEED TO CALCULATE RUNGE-KUTTA K1, K2, K3, K4 (4)
+// FOR THE PARTICLES IN SIDE THE BODY (1), FOR EACH OF THE WALLS (6), FOR EACH OF THE EDGES (12) AND FOR EACH OF THE VERTICES (8)
+// SINCE EACH ONE OF THEM HAVE DIFFERENT CONSTRAINS.
+
+
+// Constants
 int L=1;
 int i;	int j;	int k;	int t;
 float gamma=32.5;
 float v=0.05*gamma;
 
-int  X=20;	int  Y=20; 	int  Z=20;
+int  X=20; int  Y=20; int  Z=20;
 
 float tf=1000; 	double h=0.05; int  T=(tf/h +1); 
 
-//definim funcions
+// Functions
 float diff(float r,float ri){
 	return (r)-(ri);
 }
@@ -158,9 +157,8 @@ float fvz_vertex(float x, float x1,float x2,float x3,     	float y, float y1, fl
 
 int main(){
 	
-	
 	cout<<"Const. Elastica= "<<pow(0.1/(gamma*0.01),2)*(1/0.0001875)<<"\n";
-	//definim matrius
+	// Matrices
 	float x[X][Y][Z];	float vx[X][Y][Z];		float x_n[X][Y][Z];	float vx_n[X][Y][Z];
 	float y[X][Y][Z];	float vy[X][Y][Z];		float y_n[X][Y][Z];	float vy_n[X][Y][Z];
 	float z[X][Y][Z];	float vz[X][Y][Z];		float z_n[X][Y][Z];	float vz_n[X][Y][Z];
@@ -196,11 +194,12 @@ int main(){
 
 FILE* output; 
 	output = fopen("k504_s0_5.txt", "w"); 
-	fprintf(output, "temps (s)   T (K)\n"); 		
+	fprintf(output, "temps (s)   T (K)\n"); 
+
 	//RUNGE-KUTTA
 	for(int t=0;t<T+1;t++){
 		
-		//que la base no se mogui en z
+		// Constrain the base
 		for( i=0;i<X;i++){
 			for( j=0;j<Y;j++){
 				for( k=0;k<Z;k++){
@@ -210,7 +209,7 @@ FILE* output;
 			}
 		}
 		
-		///Els cops que li fem
+		/// Hits
 		if(t%100==0){
 			for(int j=0;j<Y/2;j++){					
 				for(int k=0;k<Z/2;k++){
@@ -308,7 +307,7 @@ FILE* output;
 		}
 		
 		
-		//condicions de frontera (vèrtex)
+		// Frontier Constrains
 		x[0][0][0]=0;	y[0][0][0]=0;	z[0][0][0]=0;
 		x[X-1][0][0]=X-1;	y[X-1][0][0]=0;	z[X-1][0][0]=0;
 		x[0][Y-1][0]=0;	y[0][Y-1][0]=Y-1;	z[0][Y-1][0]=0;
@@ -1339,16 +1338,14 @@ FILE* output;
 			}
 		}
 			
-	//RESULUCIÓ DEL PROBLEMA	
+	// GETTING THE RESULTS	
 	
-		//per saber la temperatura només ens cal trobar la velocitat cuadràtica mitjana de les particules 
+		// TEMPERATURE IS THE MEAN QUADRATIC SPEED OF THE PARTICLES
 		float v[X][Y][Z];
-		//dividim el pollo en parts
+		// CHUNK THE MAIN BODY
 		int P=5;
 		double average[P][P][P]; double sum[P][P][P]; double count[P][P][P];
-		
-	
-		
+
 			if(t%100==0){
 				//trobem valor de v^2
 				for( int i=0;i<X;i++){
@@ -1358,7 +1355,7 @@ FILE* output;
 						}
 					}
 				}
-				//trobem l'average per cada zona
+				// AVERGE PER CHUNKS
 				for(int n=0;n<P;n++){
 					for(int m=0;m<P;m++){
 						for(int r=0;r<P;r++){
@@ -1394,6 +1391,5 @@ FILE* output;
 		
 		}
 	fclose(output);
-	
 }
 
